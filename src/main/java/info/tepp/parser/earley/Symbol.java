@@ -1,15 +1,23 @@
 package info.tepp.parser.earley;
 
+import javax.annotation.Nonnull;
+import java.util.Comparator;
 import java.util.Objects;
 
-public abstract class Symbol {
+public abstract class Symbol implements Comparable<Symbol> {
     private Symbol() {/* sealed class */}
 
-    public static class Nonterminal extends Symbol {
+
+
+    public static class Nonterminal extends Symbol implements Comparable<Symbol> {
         private final String name;
 
-        public Nonterminal(String name) {
+        public Nonterminal(@Nonnull String name) {
             this.name = name;
+        }
+
+        public @Nonnull String getName() {
+            return name;
         }
 
         @Override
@@ -30,15 +38,20 @@ public abstract class Symbol {
             return name;
         }
 
-        public String getName() {
-            return name;
+        @Override
+        public int compareTo(@Nonnull Symbol other) {
+            if (other instanceof Nonterminal) {
+                return this.name.compareToIgnoreCase(((Nonterminal) other).name);
+            }
+
+            return 1;
         }
     }
 
-    public static class Terminal extends Symbol {
+    public static class Terminal extends Symbol implements Comparable<Symbol> {
         private final CharSequence term;
 
-        public Terminal(CharSequence term) {
+        public Terminal(@Nonnull CharSequence term) {
             this.term = term;
         }
 
@@ -63,5 +76,34 @@ public abstract class Symbol {
         public CharSequence getTerm() {
             return term;
         }
+
+        @Override
+        public int compareTo(@Nonnull Symbol other) {
+            if (other instanceof Terminal) {
+                return Comparator.compare(this.term, ((Terminal) other).term);
+            }
+
+            return -1;
+        }
     }
+
+    private static final Comparator<CharSequence> Comparator = (cs1, cs2) -> {
+        if (cs1 == cs2) return 0;
+        if (cs1 == null) return -1;
+        if (cs2 == null) return 1;
+
+        int len1 = cs1.length();
+        int len2 = cs2.length();
+        int lim = Math.min(len1, len2);
+
+
+        for (int k = 0; k < lim; k++) {
+            char c1 = cs1.charAt(k);
+            char c2 = cs2.charAt(k);
+            if (c1 != c2) {
+                return c1 - c2;
+            }
+        }
+        return len1 - len2;
+    };
 }

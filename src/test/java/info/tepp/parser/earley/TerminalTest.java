@@ -11,6 +11,7 @@ public class TerminalTest {
     public static final Terminal a = new Terminal("a");
     public static final Terminal b = new Terminal("b");
 
+    @Test
     public void terminalHasTerm() {
         assertEquals("a", a.getTerm());
     }

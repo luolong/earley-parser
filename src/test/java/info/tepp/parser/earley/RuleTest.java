@@ -5,11 +5,14 @@ import org.junit.Test;
 import java.util.Arrays;
 
 import static info.tepp.parser.earley.NonterminalTest.*;
+import static info.tepp.parser.earley.TerminalTest.a;
+import static info.tepp.parser.earley.TerminalTest.b;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class RuleTest {
 
-    public static final Rule RULE = new Rule(A, B, TerminalTest.a);
+    public static final Rule RULE = new Rule(A, B, a);
 
     @Test
     public void leftSideOfTheRuleIsANonterminal() throws Exception {
@@ -18,7 +21,7 @@ public class RuleTest {
 
     @Test
     public void rightSideOfTheRuleIsAListOfSymbols() throws Exception {
-        assertEquals(Arrays.asList(B, TerminalTest.a), RULE.getRight());
+        assertEquals(Arrays.asList(B, a), RULE.getRight());
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -29,13 +32,9 @@ public class RuleTest {
     @Test
     public void rulesAreEqualByValue() {
         assertEquals(
-                new Rule(A, B, TerminalTest.a),
-                new Rule(A, B, TerminalTest.a)
+            new Rule(A, B, a),
+            new Rule(A, B, a)
         );
     }
 
-    @Test
-    public void ruleToStringUsesBnfFormat() {
-        assertEquals("A → B \"a\"", RULE.toString());
-    }
 }

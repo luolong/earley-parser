@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    //compile 'org.projectlombok:lombok:0.10.6'
-    //compile 'javax.validation:validation-api:1.1.0.Final'
+    compile 'org.checkerframework:checker:1.9.1'
+
     testCompile 'junit:junit:4.11'
 }
