@@ -1,8 +1,10 @@
-package info.tepp.parser.earley;
+package info.tepp.earley.parser;
+
+import info.tepp.earley.parser.Symbol.Nonterminal;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
 
@@ -27,6 +29,14 @@ public class Grammar {
         return Collections.unmodifiableSet(rules);
     }
 
+    public Stream<Rule> rules() {
+        return rules.stream();
+    }
+
+    public Stream<Rule> rules(@Nonnull Nonterminal left) {
+        return rules.stream().filter(r -> left.equals(r.getLeft()));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -45,5 +55,9 @@ public class Grammar {
         return rules.stream()
                 .map(Object::toString)
                 .collect(joining("\n"));
+    }
+
+    public Reconizer getRecognizer(Nonterminal start) {
+        return new Reconizer(this, start);
     }
 }

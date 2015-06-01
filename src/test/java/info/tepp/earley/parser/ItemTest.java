@@ -1,9 +1,14 @@
-package info.tepp.parser.earley;
+package info.tepp.earley.parser;
 
-import info.tepp.parser.earley.Item.DotIndexOutOfBoundsException;
+import info.tepp.earley.parser.Item.DotIndexOutOfBoundsException;
+import org.junit.Assert;
 import org.junit.Test;
 
-import static info.tepp.parser.earley.RuleTest.RULE;
+import static info.tepp.earley.parser.NonterminalTest.A;
+import static info.tepp.earley.parser.NonterminalTest.B;
+import static info.tepp.earley.parser.RuleTest.RULE;
+import static info.tepp.earley.parser.TerminalTest.a;
+import static org.junit.Assert.assertEquals;
 
 public class ItemTest {
 
@@ -27,5 +32,12 @@ public class ItemTest {
         new Item(RULE, 0, -1);
     }
 
+    @Test
+    public void itemsAreEqual() throws Exception {
+        assertEquals(
+            new Item(new Rule(A, B, a), 0, 0),
+            new Item(new Rule(A, B, a), 0, 0)
+        );
+    }
 
 }

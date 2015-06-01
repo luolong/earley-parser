@@ -1,4 +1,4 @@
-package info.tepp.parser.earley;
+package info.tepp.earley.parser;
 
 import org.junit.Test;
 
@@ -6,12 +6,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static info.tepp.parser.earley.NonterminalTest.A;
-import static info.tepp.parser.earley.NonterminalTest.B;
-import static info.tepp.parser.earley.TerminalTest.a;
-import static info.tepp.parser.earley.TerminalTest.b;
+import static info.tepp.earley.parser.NonterminalTest.A;
+import static info.tepp.earley.parser.TerminalTest.a;
+import static info.tepp.earley.parser.TerminalTest.b;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class GrammarTest {
 

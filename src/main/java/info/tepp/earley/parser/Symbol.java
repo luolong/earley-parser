@@ -1,4 +1,4 @@
-package info.tepp.parser.earley;
+package info.tepp.earley.parser;
 
 import javax.annotation.Nonnull;
 import java.util.Comparator;
@@ -6,8 +6,6 @@ import java.util.Objects;
 
 public abstract class Symbol implements Comparable<Symbol> {
     private Symbol() {/* sealed class */}
-
-
 
     public static class Nonterminal extends Symbol implements Comparable<Symbol> {
         private final String name;
@@ -46,10 +44,18 @@ public abstract class Symbol implements Comparable<Symbol> {
 
             return 1;
         }
+
+        public Rule to(Symbol... symbols) {
+            return new Rule(this, symbols);
+        }
     }
 
     public static class Terminal extends Symbol implements Comparable<Symbol> {
         private final CharSequence term;
+
+        public Terminal(char character) {
+            this.term = String.valueOf(character);
+        }
 
         public Terminal(@Nonnull CharSequence term) {
             this.term = term;
@@ -85,6 +91,11 @@ public abstract class Symbol implements Comparable<Symbol> {
 
             return -1;
         }
+
+        public boolean matches(char nextChar) {
+            return term.charAt(0) == nextChar;
+        }
+
     }
 
     private static final Comparator<CharSequence> Comparator = (cs1, cs2) -> {
@@ -95,7 +106,6 @@ public abstract class Symbol implements Comparable<Symbol> {
         int len1 = cs1.length();
         int len2 = cs2.length();
         int lim = Math.min(len1, len2);
-
 
         for (int k = 0; k < lim; k++) {
             char c1 = cs1.charAt(k);

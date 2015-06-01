@@ -1,10 +1,9 @@
-package info.tepp.parser.earley;
+package info.tepp.earley.parser;
 
-import info.tepp.parser.earley.Symbol.Terminal;
-import org.junit.Ignore;
+import info.tepp.earley.parser.Symbol.Terminal;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class TerminalTest {
 

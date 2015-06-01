@@ -1,6 +1,6 @@
-package info.tepp.parser.earley;
+package info.tepp.earley.parser;
 
-import info.tepp.parser.earley.Symbol.Nonterminal;
+import info.tepp.earley.parser.Symbol.Nonterminal;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
