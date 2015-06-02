@@ -42,7 +42,7 @@ public abstract class Symbol implements Comparable<Symbol> {
                 return this.name.compareToIgnoreCase(((Nonterminal) other).name);
             }
 
-            return 1;
+            return -1;
         }
 
         public Rule to(Symbol... symbols) {

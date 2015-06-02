@@ -1,7 +1,7 @@
 package info.tepp.earley.parser;
 
+import info.tepp.earley.parser.Symbol.Nonterminal;
 import info.tepp.earley.parser.Symbol.Terminal;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -10,8 +10,7 @@ import static info.tepp.earley.parser.NonterminalTest.A;
 import static info.tepp.earley.parser.NonterminalTest.B;
 import static info.tepp.earley.parser.TerminalTest.a;
 import static info.tepp.earley.parser.TerminalTest.b;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class RuleTest {
 
@@ -38,16 +37,6 @@ public class RuleTest {
             new Rule(A, B, a),
             new Rule(A, B, a)
         );
-    }
-
-    @Test
-    public void ruleComparison() throws Exception {
-        assertEquals(1, new Rule(A, b).compareTo(new Rule(A, a)));
-    }
-
-    @Test
-    public void ruleComparison2() throws Exception {
-        assertEquals(1, new Rule(A, B).compareTo(new Rule(A, a)));
     }
 
     @Test
@@ -88,5 +77,36 @@ public class RuleTest {
     @Test(expected = IndexOutOfBoundsException.class)
     public void symbolAtPositionReturnsNullForNegativePosition() {
         new Rule(A, A, a, B).getSymbolAt(-1);
+    }
+
+    @Test
+    public void nonterminaRuleCompareToTerminaRule() throws Exception {
+        Terminal a = new Terminal("A");
+        Nonterminal A = new Nonterminal("A");
+
+        Rule A_to_nonterminal = A.to(a, A, a);
+        Rule A_to_terminal = A.to(a, a, A);
+
+        assertTrue(
+                String.format("Expecting [%s] < [%s]", A_to_nonterminal, A_to_terminal),
+                A_to_nonterminal.compareTo(A_to_terminal) < 0);
+    }
+
+    @Test
+    public void terminalRuleCompareToNonterminaRule() throws Exception {
+        Rule A_to_nonterminal = A.to(new Nonterminal("A"));
+        Rule A_to_terminal = A.to(new Terminal("A"));
+
+        assertTrue("",
+                A_to_terminal.compareTo(A_to_nonterminal) < 0);
+    }
+
+    @Test
+    public void rulesCompareSameAsSymbols() {
+        Terminal a = new Terminal("A");
+        Nonterminal A = new Nonterminal("A");
+
+        assertEquals(A.compareTo(a), A.to(A).compareTo(A.to(a)));
+        assertEquals(a.compareTo(A), A.to(a).compareTo(A.to(A)));
     }
 }

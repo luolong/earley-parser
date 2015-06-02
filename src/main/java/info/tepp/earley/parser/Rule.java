@@ -4,9 +4,11 @@ import info.tepp.earley.parser.Symbol.Nonterminal;
 import info.tepp.earley.parser.Symbol.Terminal;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
@@ -70,7 +72,7 @@ public class Rule implements Comparable<Rule> {
 
     @Override
     public int hashCode() {
-        return Arrays.deepHashCode(new Object[] { left, right });
+        return Arrays.deepHashCode(new Object[]{left, right});
     }
 
     @Override
@@ -139,11 +141,11 @@ public class Rule implements Comparable<Rule> {
             for (int k = 0; k < lim; k++) {
                 char c1 = cs1.charAt(k);
                 char c2 = cs2.charAt(k);
-                if (c1 != c2) {
-                    return c1 - c2;
-                }
 
-                if (c1 == OBJECT_REPLACEMENT_CHARACTER) {
+                boolean nb1 = (c1 == OBJECT_REPLACEMENT_CHARACTER);
+                boolean nb2 = (c1 == OBJECT_REPLACEMENT_CHARACTER);
+
+                if (nb1 && nb2) {
                     boolean b1 = n1.hasNext();
                     boolean b2 = n2.hasNext();
 
@@ -156,6 +158,10 @@ public class Rule implements Comparable<Rule> {
                     }
                     else if (b1) return 1;
                     else if (b2) return -1;
+                }
+
+                if (c1 != c2) {
+                    return nb1 ? -1 : nb2 ? 1 : c1 - c2;
                 }
             }
             return len1 - len2;

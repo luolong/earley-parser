@@ -1,8 +1,9 @@
 package info.tepp.earley.parser;
 
+import info.tepp.earley.parser.Symbol.Nonterminal;
+
 import javax.annotation.Nonnull;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -26,41 +27,24 @@ public class Item {
         this.start = start;
     }
 
-    @Nonnull
-    public Symbol.Nonterminal getLeft() {
-        return getRule().getLeft();
-    }
-
-    @Nonnull
-    public List<Symbol> getRight() {
-        return getRule().getRight();
-    }
-
     /**
      * Checks if rule item's start position is within valid integer range.
-     *
+     * <p>
      * In this context this only checks if the start is at negative position.
      */
     private static void checkIndexPositionRange(int index) {
-        if (index < 0) throw new ItemIndexNegativeException(index);
+        if (index < 0) throw new StartIndexNegativeException(index);
     }
 
     /**
      * Checks if rule itam's dot position is within valid range.
-     *
+     * <p>
      * Valid position range is {@code [0..rule.production.length]},
      * meaning this must fall within production positions.
      */
     private static void checkDotPositionRange(int dot, int length) {
         if (dot < 0 || dot > length)
             throw new DotIndexOutOfBoundsException(dot);
-    }
-
-    /**
-     * The rule that this item represents.
-     */
-    public @Nonnull Rule getRule() {
-        return rule;
     }
 
     /**
@@ -99,7 +83,7 @@ public class Item {
         join.add(rule.getLeft().toString()).add(Rule.ARROW);
 
         String production = rule.getProduction();
-        Iterator<Symbol.Nonterminal> nonterminals = rule.nonTerminals().iterator();
+        Iterator<Nonterminal> nonterminals = rule.nonTerminals().iterator();
         if (dot > 0) {
             join.add(Rule.formatProduction(nonterminals, production.substring(0, dot)));
         }
@@ -117,9 +101,14 @@ public class Item {
         return rule.getSymbolAt(dot);
     }
 
-    public Item next() {
-        return new Item(rule, dot+1, start);
+    public Item advance() {
+        return new Item(rule, dot + 1, start);
     }
+
+    public boolean isDone() {
+        return dot == rule.getProduction().length();
+    }
+
 
     /**
      * Thrown when constructing an Item whose dot position falls outlide production sequence.
@@ -130,8 +119,8 @@ public class Item {
         }
     }
 
-    public static class ItemIndexNegativeException extends IndexOutOfBoundsException {
-        public ItemIndexNegativeException(int index) {
+    public static class StartIndexNegativeException extends IndexOutOfBoundsException {
+        public StartIndexNegativeException(int index) {
             super(String.valueOf(index));
         }
     }

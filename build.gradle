@@ -17,4 +17,5 @@ dependencies {
     compile 'org.checkerframework:checker:1.9.1'
 
     testCompile 'junit:junit:4.11'
+    testCompile 'org.easytesting:fest-assert-core:2.0M10'
 }

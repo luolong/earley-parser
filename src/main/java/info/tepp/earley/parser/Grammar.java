@@ -15,7 +15,7 @@ public class Grammar {
 
     private final Set<Rule> rules;
 
-    public static Grammar of(@Nonnull Rule ... rules) {
+    public static Grammar of(@Nonnull Rule... rules) {
         TreeSet<Rule> set = new TreeSet<>(Comparator.<Rule>naturalOrder());
         set.addAll(Arrays.asList(rules));
         return new Grammar(set);
