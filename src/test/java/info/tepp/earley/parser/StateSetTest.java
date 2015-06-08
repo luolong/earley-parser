@@ -1,5 +1,6 @@
 package info.tepp.earley.parser;
 
+import info.tepp.earley.parser.StateSet.Prediction;
 import org.junit.Test;
 
 import java.util.*;
@@ -14,17 +15,11 @@ public class StateSetTest {
 
     @Test
     public void predicterPredictsNextNonterminalProductions() throws Exception {
-        LinkedList<Item> queue = new LinkedList<>();
-
-        StateSet stateSet = new StateSet(0, queue);
-        stateSet.predicter(grammar, queue)
-                .predict(Sum.to(Product).toItem(0), 0);
-
         assertEquals(
-                asSet(Product.to(Product, TIMES_OP, Factor).toItem(0),
-                      Product.to(Product, DIVISION_OP, Factor).toItem(0),
-                      Product.to(Factor).toItem(0)),
-                asSet(queue));
+                asSet(Product.to(Product, TIMES_OP, Factor),
+                      Product.to(Product, DIVISION_OP, Factor),
+                      Product.to(Factor)),
+                asSet(new Prediction(grammar).predict(Sum.to(Product).toItem(0))));
     }
 
     @Test
@@ -37,7 +32,7 @@ public class StateSetTest {
                 Product.to(Product, DIVISION_OP, Factor).toItem(0));
 
         assertTrue(queue.addAll(items));
-        assertEquals(asSet(items), stateSet);
+        assertEquals(asSet(items), asSet(stateSet));
     }
 
     @Test
@@ -60,29 +55,16 @@ public class StateSetTest {
                 "Nothing should be added to the queue",
                 queue.addAll(asSet(Sum.to(Product).toItem(0))));
 
-        assertEquals(asSet(Sum.to(Product).toItem(0)), stateSet);
-    }
-
-    @Test
-    public void scannerDoesNotMatchNonterminalSymbol() throws Exception {
-        StateSet.Scanner scanner = new StateSet(0, emptySet()).scanner("(1+2)*3");
-        assertFalse(scanner.scan(Factor.to(Number).toItem(0)));
-    }
-
-    @Test
-    public void scannerMatchesTerminalSymbol() throws Exception {
-        StateSet.Scanner scanner = new StateSet(0, emptySet()).scanner("(1+2)*3");
-        assertTrue(scanner.scan(Factor.to(LPAREN, Sum, RPAREN).toItem(0)));
+        assertEquals(asSet(Sum.to(Product).toItem(0)), asSet(stateSet));
     }
 
     @Test
     public void scannerAddsMatchingItemToNextStateSet() throws Exception {
-        StateSet.Scanner scanner = new StateSet(0, emptySet()).scanner("(1+2)*3");
-        scanner.scan(Factor.to(LPAREN, Sum, RPAREN).toItem(0));
+        StateSet.Scan scan = new StateSet(0, emptySet()).scanner("(1+2)*3");
 
         assertEquals(
                 asSet(Factor.to(LPAREN, Sum, RPAREN).toItem(0).advance()),
-                scanner.getAdvancedItems());
+                scan.scan(Factor.to(LPAREN, Sum, RPAREN).toItem(0)));
     }
 
     @Test
@@ -135,7 +117,7 @@ public class StateSetTest {
         StateSet stateSet = StateSet.of(0,
                 Sum.to(Sum, PLUS_OP, Product), Sum.to(Sum, MINUS_OP, Product), Sum.to(Product));
 
-        stateSet.scan("", grammar);
+        stateSet.scan("", new Prediction(grammar), new StateSet.Completion(Collections.emptyList()));
 
         StateSet expected = StateSet.of(0,
                 Sum.to(Sum, PLUS_OP, Product), Sum.to(Sum, MINUS_OP, Product), Sum.to(Product),
@@ -157,7 +139,7 @@ public class StateSetTest {
         StateSet stateSet = StateSet.of(0,
                 Sum.to(Sum, PLUS_OP, Product), Sum.to(Sum, MINUS_OP, Product), Sum.to(Product));
 
-        StateSet nextStateSet = stateSet.scan("1", grammar);
+        StateSet nextStateSet = stateSet.scan("1", new Prediction(grammar), new StateSet.Completion(Collections.emptyList()));
 
         StateSet expected = StateSet.of(1, Number.to(ONE).toItem(0).advance());
 

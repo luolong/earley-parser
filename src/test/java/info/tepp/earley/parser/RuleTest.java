@@ -98,15 +98,26 @@ public class RuleTest {
         Rule A_to_terminal = A.to(new Terminal("A"));
 
         assertTrue("",
-                A_to_terminal.compareTo(A_to_nonterminal) < 0);
+                A_to_terminal.compareTo(A_to_nonterminal) > 0);
     }
 
     @Test
-    public void rulesCompareSameAsSymbols() {
+    public void rulesCompareSameAsSymbols0() {
         Terminal a = new Terminal("A");
         Nonterminal A = new Nonterminal("A");
 
-        assertEquals(A.compareTo(a), A.to(A).compareTo(A.to(a)));
-        assertEquals(a.compareTo(A), A.to(a).compareTo(A.to(A)));
+        assertEquals("Expecting A<=>\"A\" same as [A→A]<=>[A→\"A\"]",
+                     A.compareTo(a), A.to(A).compareTo(A.to(a)));
+    }
+
+    @Test
+    public void rulesCompareSameAsSymbols1() {
+        Terminal a = new Terminal("A");
+        Nonterminal A = new Nonterminal("A");
+
+        Rule A_to_a = A.to(a);
+        Rule A_to_A = A.to(A);
+        assertEquals("Expecting \"A\"<=>A same as [A→\"A\"]<=>[A→A]",
+                a.compareTo(A), A_to_a.compareTo(A_to_A));
     }
 }

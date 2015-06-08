@@ -3,6 +3,7 @@ package info.tepp.earley.parser;
 import info.tepp.earley.parser.Symbol.Nonterminal;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,10 +13,12 @@ import java.util.stream.Collectors;
 public class Reconizer {
 
     private final Grammar grammar;
+    private final Nonterminal start;
     private final ArrayList<StateSet> stateSets;
 
     public Reconizer(Grammar grammar, Nonterminal start) {
         this.grammar = grammar;
+        this.start = start;
 
         stateSets = new ArrayList<>();
         List<Item> items = grammar
@@ -37,9 +40,20 @@ public class Reconizer {
     public boolean recognizes(String input) {
         int length = input.length();
         stateSets.ensureCapacity(length);
-        for (int i = 0; i < length; i++) {
-            stateSets.get(i).scan(input, grammar);
+        int i = 0;
+        while (i < stateSets.size()) {
+            StateSet next = stateSets.get(i).scan(input,
+                    new StateSet.Prediction(grammar),
+                    new StateSet.Completion(stateSets));
+
+            if (next.isEmpty()) break;
+            stateSets.add(next);
+
+            i += 1;
         }
-        return false;
+
+        return i == input.length() && stateSets.get(i).stream()
+                .anyMatch(item -> item.isDone() && item.getStart() == 0 && item.getLeft() == start);
+
     }
 }

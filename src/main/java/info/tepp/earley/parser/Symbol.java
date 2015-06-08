@@ -89,7 +89,7 @@ public abstract class Symbol implements Comparable<Symbol> {
                 return Comparator.compare(this.term, ((Terminal) other).term);
             }
 
-            return -1;
+            return 1;
         }
 
         public boolean matches(char nextChar) {

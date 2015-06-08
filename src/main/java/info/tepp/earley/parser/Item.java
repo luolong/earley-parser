@@ -109,6 +109,14 @@ public class Item {
         return dot == rule.getProduction().length();
     }
 
+    public Rule getRule() {
+        return rule;
+    }
+
+    public Nonterminal getLeft() {
+        return rule.getLeft();
+    }
+
 
     /**
      * Thrown when constructing an Item whose dot position falls outlide production sequence.

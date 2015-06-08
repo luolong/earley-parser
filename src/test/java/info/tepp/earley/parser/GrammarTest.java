@@ -40,8 +40,9 @@ public class GrammarTest {
     @Test
     public void grammarToStringReturnsAllRulesSeparategByLinebreak() throws Exception {
         assertEquals(String.join("\n",
-                        "A → \"ab\"",
-                        "A → \"a\" A \"b\""),
+                        "A → \"a\" A \"b\"",
+                        "A → \"ab\""
+                ),
                 grammar.toString());
     }
 

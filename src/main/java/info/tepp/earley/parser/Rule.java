@@ -143,7 +143,7 @@ public class Rule implements Comparable<Rule> {
                 char c2 = cs2.charAt(k);
 
                 boolean nb1 = (c1 == OBJECT_REPLACEMENT_CHARACTER);
-                boolean nb2 = (c1 == OBJECT_REPLACEMENT_CHARACTER);
+                boolean nb2 = (c2 == OBJECT_REPLACEMENT_CHARACTER);
 
                 if (nb1 && nb2) {
                     boolean b1 = n1.hasNext();
@@ -163,6 +163,7 @@ public class Rule implements Comparable<Rule> {
                 if (c1 != c2) {
                     return nb1 ? -1 : nb2 ? 1 : c1 - c2;
                 }
+
             }
             return len1 - len2;
         };

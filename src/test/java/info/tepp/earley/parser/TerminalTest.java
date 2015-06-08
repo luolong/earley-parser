@@ -31,7 +31,7 @@ public class TerminalTest {
     @Test
     public void terminalComparesGreaterThanNonterminal() throws Exception {
         assertTrue("Terminal symbol should compare as greater than Nonterminal symbol",
-                a.compareTo(new Nonterminal("a")) < 0);
+                a.compareTo(new Nonterminal("a")) > 0);
     }
 
     @Test

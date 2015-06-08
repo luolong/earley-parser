@@ -2,14 +2,19 @@ package info.tepp.earley.parser;
 
 import info.tepp.earley.parser.Symbol.Nonterminal;
 import info.tepp.earley.parser.Symbol.Terminal;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * State set of some parse position
@@ -31,6 +36,11 @@ public class StateSet extends AbstractSet<Item> implements Set<Item> {
     public StateSet(int index, Collection<Item> items) {
         this.index = index;
         this.items = new LinkedHashSet<>(items);
+    }
+
+    @Override
+    public Stream<Item> stream() {
+        return items.stream();
     }
 
     @Override
@@ -89,33 +99,37 @@ public class StateSet extends AbstractSet<Item> implements Set<Item> {
      * initial state of the next state set based on the findings
      * of this state set.
      */
-    public StateSet scan(String string, Grammar grammar) {
+    public StateSet scan(String string, Prediction prediction, Completion completion) {
         Queue<Item> queue = getQueue();
+        Scan scan = scanner(string);
 
-        Predicter predicter = predicter(grammar, queue);
-        Scanner scanner = scanner(string);
+        StateSet next = new StateSet(index + 1, emptySet());
 
         Item item;
         while ((item = queue.poll()) != null) {
+            queue.addAll(prediction
+                    .predict(item).stream()
+                    .map(r -> r.toItem(index))
+                    .collect(toList()));
 
-            predicter.predict(item, index);
-            scanner.scan(item);
+            next.addAll(scan.scan(item));
 
+            queue.addAll(completion.complete(item));
         }
 
-        return new StateSet(index + 1, scanner.getAdvancedItems());
+        return next;
     }
 
-    Scanner scanner(String string) {
+    Scan scanner(String string) {
         if (string.length() > index) {
-            return new Scanner(string.charAt(index));
+            return new Scan(string.charAt(index));
         }
-        return Scanner.EMPTY;
+        return Scan.EMPTY;
     }
 
     @Nonnull
-    Predicter predicter(Grammar grammar, Queue<Item> queue) {
-        return new Predicter(queue, grammar);
+    Prediction predicter(Grammar grammar) {
+        return new Prediction(grammar);
     }
 
     @Nonnull
@@ -138,62 +152,86 @@ public class StateSet extends AbstractSet<Item> implements Set<Item> {
         return queue;
     }
 
-    public static class Predicter {
-        private final Queue<Item> queue;
-        private final Grammar grammar;
+    @Override
+    public String toString() {
+        Iterator<Item> it = iterator();
+        if (! it.hasNext())
+            return "{@" + index + "}";
 
-        public Predicter(Queue<Item> queue, Grammar grammar) {
-            this.queue = queue;
-            this.grammar = grammar;
-        }
-
-        public boolean predict(Item item, int index) {
-            ArrayList<Item> predictions = new ArrayList<>();
-            Symbol symbol = item.getCurrent();
-            if (symbol instanceof Nonterminal) {
-                // Collect all predictions for this rule
-                grammar.rules((Nonterminal) symbol)
-                       .map(rule1 -> rule1.toItem(index))
-                       .forEachOrdered(predictions::add);
-            }
-
-            return queue.addAll(predictions);
+        StringBuilder sb = new StringBuilder();
+        sb.append('{');
+        sb.append('@').append(index).append(':').append(' ');
+        for (;;) {
+            Object e = it.next();
+            sb.append(e == this ? "(this Collection)" : e);
+            if (! it.hasNext())
+                return sb.append('}').toString();
+            sb.append(',').append(' ');
         }
     }
 
-    public static class Scanner {
-        private static Scanner EMPTY = new Scanner('\0') {
-            @Override
-            public boolean scan(Item item) {
-                return false;
+    public static class Prediction {
+        private final Grammar grammar;
+
+        public Prediction(Grammar grammar) {
+            this.grammar = grammar;
+        }
+
+        public List<Rule> predict(Item item) {
+            Symbol symbol = item.getCurrent();
+            if (symbol instanceof Nonterminal) {
+                // Collect all predictions for this rule
+                return grammar
+                        .rules((Nonterminal) symbol)
+                        .collect(toList());
             }
 
+            return emptyList();
+        }
+    }
+
+    public static class Scan {
+        private static Scan EMPTY = new Scan('\0') {
             @Override
-            public Set<Item> getAdvancedItems() {
-                return Collections.emptySet();
+            public Set<Item> scan(Item item) {
+                return emptySet();
             }
         };
 
         private final char character;
-        private final Set<Item> items = new HashSet<>();
 
-        Scanner(char character) {
+        Scan(char character) {
             this.character = character;
         }
 
-        public boolean scan(Item item) {
+        public Set<Item> scan(Item item) {
             Symbol symbol = item.getCurrent();
             if (symbol instanceof Terminal) {
                 if (((Terminal) symbol).matches(character)) {
-                    items.add(item.advance());
-                    return true;
+                    return singleton(item.advance());
                 }
             }
-            return false;
+            return emptySet();
+        }
+    }
+
+    public static class Completion {
+        private final List<StateSet> stateSets;
+
+        public Completion(List<StateSet> stateSets) {
+            this.stateSets = stateSets;
         }
 
-        public Set<Item> getAdvancedItems() {
-            return items;
+        public Set<Item> complete(Item item) {
+            if (item.isDone()) {
+                return stateSets.get(item.getStart()).stream()
+                        .filter(i -> !i.isDone())
+                        .filter(i -> i.getCurrent().equals(item.getLeft()))
+                        .map(Item::advance)
+                        .collect(toSet());
+            }
+            return emptySet();
         }
+
     }
 }
