@@ -4,7 +4,8 @@ import org.junit.Test;
 
 import java.util.stream.Stream;
 
-import static info.tepp.earley.parser.SimpleArithmetic.*;
+import static info.tepp.earley.parser.SimpleArithmetic.Expression;
+import static info.tepp.earley.parser.SimpleArithmetic.grammar;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;

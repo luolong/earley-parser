@@ -4,10 +4,8 @@ import info.tepp.earley.parser.Symbol.Nonterminal;
 import info.tepp.earley.parser.Symbol.Terminal;
 import org.junit.Test;
 
-import static info.tepp.earley.parser.TerminalTest.a;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class NonterminalTest {
 

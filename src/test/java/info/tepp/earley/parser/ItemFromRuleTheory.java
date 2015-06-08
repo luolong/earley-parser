@@ -1,6 +1,8 @@
 package info.tepp.earley.parser;
 
-import org.junit.experimental.theories.*;
+import org.junit.experimental.theories.DataPoint;
+import org.junit.experimental.theories.Theories;
+import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;

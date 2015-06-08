@@ -1,6 +1,7 @@
 package info.tepp.earley.parser;
 
-import static info.tepp.earley.parser.Symbol.*;
+import static info.tepp.earley.parser.Symbol.Nonterminal;
+import static info.tepp.earley.parser.Symbol.Terminal;
 
 public class SimpleArithmetic {
 

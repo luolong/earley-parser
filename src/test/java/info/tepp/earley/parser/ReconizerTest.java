@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static info.tepp.earley.parser.SimpleArithmetic.Sum;
 import static info.tepp.earley.parser.SimpleArithmetic.grammar;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 public class ReconizerTest {
 

@@ -3,7 +3,6 @@ package info.tepp.earley.parser;
 import info.tepp.earley.parser.Symbol.Nonterminal;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 

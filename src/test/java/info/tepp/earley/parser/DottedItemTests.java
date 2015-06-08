@@ -1,7 +1,5 @@
 package info.tepp.earley.parser;
 
-import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -14,7 +12,6 @@ import static info.tepp.earley.parser.NonterminalTest.B;
 import static info.tepp.earley.parser.TerminalTest.a;
 import static info.tepp.earley.parser.TerminalTest.b;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeTrue;
 
 @RunWith(Parameterized.class)
 public class DottedItemTests {

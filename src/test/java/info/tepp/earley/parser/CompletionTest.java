@@ -2,13 +2,13 @@ package info.tepp.earley.parser;
 
 import org.junit.Test;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static info.tepp.earley.parser.SimpleArithmetic.*;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class CompletionTest {
 
