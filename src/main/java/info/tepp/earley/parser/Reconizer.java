@@ -42,8 +42,8 @@ public class Reconizer {
         int i = 0;
         while (i < stateSets.size()) {
             StateSet next = stateSets.get(i).scan(input,
-                    new StateSet.Prediction(grammar),
-                    new StateSet.Completion(stateSets));
+                    new StateSet.Predictor(grammar),
+                    new StateSet.Completer(stateSets));
 
             if (next.isEmpty()) break;
             stateSets.add(next);

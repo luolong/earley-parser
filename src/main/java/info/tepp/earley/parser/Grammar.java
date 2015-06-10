@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static info.tepp.earley.parser.NullableSymbols.findNullableSymbols;
 import static java.util.stream.Collectors.joining;
 
 /**
@@ -14,6 +15,7 @@ import static java.util.stream.Collectors.joining;
 public class Grammar {
 
     private final Set<Rule> rules;
+    private final Set<Nonterminal> nullables;
 
     public static Grammar of(@Nonnull Rule... rules) {
         TreeSet<Rule> set = new TreeSet<>(Comparator.<Rule>naturalOrder());
@@ -22,7 +24,8 @@ public class Grammar {
     }
 
     private Grammar(@Nonnull Set<Rule> rules) {
-        this.rules = rules;
+        this.rules = Collections.unmodifiableSet(rules);
+        this.nullables = Collections.unmodifiableSet(findNullableSymbols(rules));
     }
 
     public @Nonnull Set<Rule> getRules() {
@@ -35,6 +38,10 @@ public class Grammar {
 
     public Stream<Rule> rules(@Nonnull Nonterminal left) {
         return rules.stream().filter(r -> left.equals(r.getLeft()));
+    }
+
+    public boolean isNullable(Nonterminal symbol) {
+        return nullables.contains(symbol);
     }
 
     @Override

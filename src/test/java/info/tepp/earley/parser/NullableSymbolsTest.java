@@ -5,7 +5,6 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static info.tepp.earley.parser.NullableSymbols.findNullableSymbols;
 import static java.util.stream.Collectors.toSet;
@@ -16,8 +15,8 @@ public class NullableSymbolsTest {
 
     static final Nonterminal A = Symbol.named("A");
     static final Nonterminal B = Symbol.named("B");
-    static final Symbol.Terminal a = Symbol.term("a");
-    static final Symbol.Terminal b = Symbol.term("b");
+    static final Symbol.Sequence a = Symbol.sequence("a");
+    static final Symbol.Sequence b = Symbol.sequence("b");
 
     @Test
     public void leftOfEmptyRuleIsNullable() {

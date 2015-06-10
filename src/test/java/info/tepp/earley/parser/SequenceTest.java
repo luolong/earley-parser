@@ -1,25 +1,25 @@
 package info.tepp.earley.parser;
 
 import info.tepp.earley.parser.Symbol.Nonterminal;
-import info.tepp.earley.parser.Symbol.Terminal;
+import info.tepp.earley.parser.Symbol.Sequence;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class TerminalTest {
+public class SequenceTest {
 
-    public static final Terminal a = new Terminal("a");
-    public static final Terminal b = new Terminal("b");
+    public static final Sequence a = new Sequence("a");
+    public static final Sequence b = new Sequence("b");
 
     @Test
     public void terminalHasTerm() {
-        assertEquals("a", a.getTerm());
+        assertEquals("a", a.getSequence());
     }
 
     @Test
     public void terminalSymbolsEqualByValue() throws Exception {
-        assertEquals(new Terminal("a"), new Terminal("a"));
+        assertEquals(new Sequence("a"), new Sequence("a"));
     }
 
     @Test
@@ -35,8 +35,8 @@ public class TerminalTest {
 
     @Test
     public void terminalSymbolsAreComparedCharByChar() throws Exception {
-        Terminal abc1 = new Terminal("abc");
-        Terminal abc2 = new Terminal("abc");
+        Sequence abc1 = new Sequence("abc");
+        Sequence abc2 = new Sequence("abc");
         assertTrue(abc1.compareTo(abc2) == 0);
     }
 }

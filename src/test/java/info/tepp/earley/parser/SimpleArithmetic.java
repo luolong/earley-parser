@@ -1,7 +1,7 @@
 package info.tepp.earley.parser;
 
 import static info.tepp.earley.parser.Symbol.Nonterminal;
-import static info.tepp.earley.parser.Symbol.Terminal;
+import static info.tepp.earley.parser.Symbol.Sequence;
 
 public class SimpleArithmetic {
 
@@ -12,23 +12,23 @@ public class SimpleArithmetic {
 
     static final Nonterminal Expression = new Nonterminal("Expression");
 
-    static final Terminal PLUS_OP      = new Terminal("+");
-    static final Terminal MINUS_OP     = new Terminal("-");
-    static final Terminal TIMES_OP     = new Terminal("*");
-    static final Terminal DIVISION_OP  = new Terminal("/");
-    static final Terminal LPAREN       = new Terminal("(");
-    static final Terminal RPAREN       = new Terminal(")");
+    static final Sequence PLUS_OP      = new Sequence("+");
+    static final Sequence MINUS_OP     = new Sequence("-");
+    static final Sequence TIMES_OP     = new Sequence("*");
+    static final Sequence DIVISION_OP  = new Sequence("/");
+    static final Sequence LPAREN       = new Sequence("(");
+    static final Sequence RPAREN       = new Sequence(")");
 
-    static final Terminal ZERO         = new Terminal("0");
-    static final Terminal ONE          = new Terminal("1");
-    static final Terminal TWO          = new Terminal("2");
-    static final Terminal THREE        = new Terminal("3");
-    static final Terminal FOUR         = new Terminal("4");
-    static final Terminal FIVE         = new Terminal("5");
-    static final Terminal SIX          = new Terminal("6");
-    static final Terminal SEVEN        = new Terminal("7");
-    static final Terminal EIGHT        = new Terminal("8");
-    static final Terminal NINE         = new Terminal("9");
+    static final Sequence ZERO         = new Sequence("0");
+    static final Sequence ONE          = new Sequence("1");
+    static final Sequence TWO          = new Sequence("2");
+    static final Sequence THREE        = new Sequence("3");
+    static final Sequence FOUR         = new Sequence("4");
+    static final Sequence FIVE         = new Sequence("5");
+    static final Sequence SIX          = new Sequence("6");
+    static final Sequence SEVEN        = new Sequence("7");
+    static final Sequence EIGHT        = new Sequence("8");
+    static final Sequence NINE         = new Sequence("9");
 
 
     static final Grammar grammar = Grammar.of(

@@ -1,7 +1,7 @@
 package info.tepp.earley.parser;
 
 import info.tepp.earley.parser.Symbol.Nonterminal;
-import info.tepp.earley.parser.Symbol.Terminal;
+import info.tepp.earley.parser.Symbol.Sequence;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -31,6 +31,6 @@ public class NonterminalTest {
     public void compareToTerminalSymbolAlwaysSmaller() throws Exception {
         assertTrue(
                 "Nonterminal symbol should compare as less than Terminal symbol",
-                A.compareTo(new Terminal("A")) < 0);
+                A.compareTo(new Sequence("A")) < 0);
     }
 }

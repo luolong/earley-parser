@@ -1,15 +1,15 @@
 package info.tepp.earley.parser;
 
 import info.tepp.earley.parser.Symbol.Nonterminal;
-import info.tepp.earley.parser.Symbol.Terminal;
+import info.tepp.earley.parser.Symbol.Sequence;
 import org.junit.Test;
 
 import java.util.Arrays;
 
 import static info.tepp.earley.parser.NonterminalTest.A;
 import static info.tepp.earley.parser.NonterminalTest.B;
-import static info.tepp.earley.parser.TerminalTest.a;
-import static info.tepp.earley.parser.TerminalTest.b;
+import static info.tepp.earley.parser.SequenceTest.a;
+import static info.tepp.earley.parser.SequenceTest.b;
 import static org.junit.Assert.*;
 
 public class RuleTest {
@@ -28,7 +28,7 @@ public class RuleTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void RuleProductionSymbolsListIsUnmodifiable() throws Exception {
-        RULE.getRight().add(TerminalTest.b);
+        RULE.getRight().add(SequenceTest.b);
     }
 
     @Test
@@ -41,17 +41,17 @@ public class RuleTest {
 
     @Test
     public void symbolAtPositionReturnsSingleTerminalCharacter0() {
-        assertEquals(a, new Rule(A, new Terminal("abc")).getSymbolAt(0));
+        assertEquals(a, new Rule(A, new Sequence("abc")).getSymbolAt(0));
     }
 
     @Test
     public void symbolAtPositionReturnsSingleTerminalCharacter1() {
-        assertEquals(b, new Rule(A, new Terminal("abc")).getSymbolAt(1));
+        assertEquals(b, new Rule(A, new Sequence("abc")).getSymbolAt(1));
     }
 
     @Test
     public void symbolAtPositionReturnsNullAtEndPosition() {
-        assertNull(new Rule(A, new Terminal("abc")).getSymbolAt(3));
+        assertNull(new Rule(A, new Sequence("abc")).getSymbolAt(3));
     }
 
     @Test
@@ -81,7 +81,7 @@ public class RuleTest {
 
     @Test
     public void nonterminaRuleCompareToTerminaRule() throws Exception {
-        Terminal a = new Terminal("A");
+        Sequence a = new Sequence("A");
         Nonterminal A = new Nonterminal("A");
 
         Rule A_to_nonterminal = A.to(a, A, a);
@@ -95,7 +95,7 @@ public class RuleTest {
     @Test
     public void terminalRuleCompareToNonterminaRule() throws Exception {
         Rule A_to_nonterminal = A.to(new Nonterminal("A"));
-        Rule A_to_terminal = A.to(new Terminal("A"));
+        Rule A_to_terminal = A.to(new Sequence("A"));
 
         assertTrue("",
                 A_to_terminal.compareTo(A_to_nonterminal) > 0);
@@ -103,7 +103,7 @@ public class RuleTest {
 
     @Test
     public void rulesCompareSameAsSymbols0() {
-        Terminal a = new Terminal("A");
+        Sequence a = new Sequence("A");
         Nonterminal A = new Nonterminal("A");
 
         assertEquals("Expecting A<=>\"A\" same as [A→A]<=>[A→\"A\"]",
@@ -112,7 +112,7 @@ public class RuleTest {
 
     @Test
     public void rulesCompareSameAsSymbols1() {
-        Terminal a = new Terminal("A");
+        Sequence a = new Sequence("A");
         Nonterminal A = new Nonterminal("A");
 
         Rule A_to_a = A.to(a);

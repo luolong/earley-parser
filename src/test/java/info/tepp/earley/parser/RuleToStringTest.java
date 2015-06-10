@@ -17,14 +17,14 @@ public class RuleToStringTest {
     @Parameters(name = "{index}: {1}")
     public static Iterable<Object[]> parameters() {
         return Arrays.asList(
-                new Object[] {"A → B \"a\"",         new Rule(NonterminalTest.A, /* -> */ NonterminalTest.B, TerminalTest.a)},
-                new Object[] {"A → A \"ab\" B",      new Rule(NonterminalTest.A, /* -> */ NonterminalTest.A, TerminalTest.a, TerminalTest.b, NonterminalTest.B)},
-                new Object[] {"A → \"a\" A \"b\" B", new Rule(NonterminalTest.A, /* -> */ TerminalTest.a, NonterminalTest.A, TerminalTest.b, NonterminalTest.B)},
-                new Object[] {"A → \"a\" A B \"b\"", new Rule(NonterminalTest.A, /* -> */ TerminalTest.a, NonterminalTest.A, NonterminalTest.B, TerminalTest.b)},
-                new Object[] {"A → A B \"ab\"",      new Rule(NonterminalTest.A, /* -> */ NonterminalTest.A, NonterminalTest.B, TerminalTest.a, TerminalTest.b)},
-                new Object[] {"A → \"ab\" A B",      new Rule(NonterminalTest.A, /* -> */ TerminalTest.a, TerminalTest.b, NonterminalTest.A, NonterminalTest.B)},
+                new Object[] {"A → B \"a\"",         new Rule(NonterminalTest.A, /* -> */ NonterminalTest.B, SequenceTest.a)},
+                new Object[] {"A → A \"ab\" B",      new Rule(NonterminalTest.A, /* -> */ NonterminalTest.A, SequenceTest.a, SequenceTest.b, NonterminalTest.B)},
+                new Object[] {"A → \"a\" A \"b\" B", new Rule(NonterminalTest.A, /* -> */ SequenceTest.a, NonterminalTest.A, SequenceTest.b, NonterminalTest.B)},
+                new Object[] {"A → \"a\" A B \"b\"", new Rule(NonterminalTest.A, /* -> */ SequenceTest.a, NonterminalTest.A, NonterminalTest.B, SequenceTest.b)},
+                new Object[] {"A → A B \"ab\"",      new Rule(NonterminalTest.A, /* -> */ NonterminalTest.A, NonterminalTest.B, SequenceTest.a, SequenceTest.b)},
+                new Object[] {"A → \"ab\" A B",      new Rule(NonterminalTest.A, /* -> */ SequenceTest.a, SequenceTest.b, NonterminalTest.A, NonterminalTest.B)},
                 new Object[] {"A → A B",             new Rule(NonterminalTest.A, /* -> */ NonterminalTest.A, NonterminalTest.B)},
-                new Object[] {"A → \"ab\"",          new Rule(NonterminalTest.A, /* -> */ TerminalTest.a, TerminalTest.b)}
+                new Object[] {"A → \"ab\"",          new Rule(NonterminalTest.A, /* -> */ SequenceTest.a, SequenceTest.b)}
         );
     }
 

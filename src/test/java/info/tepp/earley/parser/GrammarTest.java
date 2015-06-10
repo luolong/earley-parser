@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static info.tepp.earley.parser.NonterminalTest.A;
-import static info.tepp.earley.parser.TerminalTest.a;
-import static info.tepp.earley.parser.TerminalTest.b;
+import static info.tepp.earley.parser.SequenceTest.a;
+import static info.tepp.earley.parser.SequenceTest.b;
 import static org.junit.Assert.assertEquals;
 
 public class GrammarTest {

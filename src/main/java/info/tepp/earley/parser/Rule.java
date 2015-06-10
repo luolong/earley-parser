@@ -1,7 +1,7 @@
 package info.tepp.earley.parser;
 
 import info.tepp.earley.parser.Symbol.Nonterminal;
-import info.tepp.earley.parser.Symbol.Terminal;
+import info.tepp.earley.parser.Symbol.Sequence;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -34,8 +34,8 @@ public class Rule implements Comparable<Rule> {
         this.production = stream(this.right)
                 .filter(symbol -> symbol != null)
                 .map((s -> {
-                    if (s instanceof Terminal) {
-                        return ((Terminal) s).getTerm();
+                    if (s instanceof Sequence) {
+                        return ((Sequence) s).getSequence();
                     } else {
                         return String.valueOf(OBJECT_REPLACEMENT_CHARACTER);
                     }
@@ -192,7 +192,7 @@ public class Rule implements Comparable<Rule> {
                 return nonTerminals().skip(count)
                         .findFirst().get();
             }
-            return new Terminal(ch);
+            return new Sequence(ch);
         }
 
         return null;

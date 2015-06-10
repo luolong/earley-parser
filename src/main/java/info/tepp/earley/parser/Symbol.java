@@ -11,8 +11,14 @@ public abstract class Symbol implements Comparable<Symbol> {
         return new Nonterminal(name);
     }
 
-    public static Terminal term(String term) {
-        return new Terminal(term);
+    public static Terminal sequence(String term) {
+        return new Sequence(term);
+    }
+    public static Terminal caseOf(String cases) {
+        if (cases.length() == 1)
+            return new Sequence(cases);
+
+        return new Sequence(cases);
     }
 
     public static class Nonterminal extends Symbol implements Comparable<Symbol> {
@@ -50,7 +56,7 @@ public abstract class Symbol implements Comparable<Symbol> {
                 return this.name.compareToIgnoreCase(((Nonterminal) other).name);
             }
 
-            return -1;
+            return super.compareTo(other);
         }
 
         public Rule to(Symbol... symbols) {
@@ -63,53 +69,74 @@ public abstract class Symbol implements Comparable<Symbol> {
 
     }
 
-    public static class Terminal extends Symbol implements Comparable<Symbol> {
-        private final CharSequence term;
+    public abstract static class Terminal extends Symbol implements Comparable<Symbol> {
+        public abstract boolean matches(char nextChar);
+    }
 
-        public Terminal(char character) {
-            this.term = String.valueOf(character);
+    public static class Sequence extends Terminal implements Comparable<Symbol> {
+        private final CharSequence sequence;
+
+        public Sequence(char character) {
+            this.sequence = String.valueOf(character);
         }
 
-        public Terminal(@Nonnull CharSequence term) {
-            this.term = term;
+        public Sequence(@Nonnull CharSequence sequence) {
+            this.sequence = sequence;
         }
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            Terminal terminal = (Terminal) o;
-            return Objects.equals(term, terminal.term);
+            Sequence sequence = (Sequence) o;
+            return Objects.equals(this.sequence, sequence.sequence);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(term);
+            return Objects.hash(sequence);
         }
 
         @Override
         public String toString() {
-            return "\"" + term + "\"";
+            return "\"" + sequence + "\"";
         }
 
-        public CharSequence getTerm() {
-            return term;
+        public CharSequence getSequence() {
+            return sequence;
         }
 
         @Override
         public int compareTo(@Nonnull Symbol other) {
-            if (other instanceof Terminal) {
-                return Comparator.compare(this.term, ((Terminal) other).term);
+            if (other instanceof Sequence) {
+                return Comparator.compare(this.sequence, ((Sequence) other).sequence);
             }
 
             return 1;
         }
 
+        @Override
         public boolean matches(char nextChar) {
-            return term.charAt(0) == nextChar;
+            return sequence.charAt(0) == nextChar;
         }
 
     }
+
+    private static <T extends Symbol> int orderOf(Class<T> type) {
+        if (type.isAssignableFrom(Nonterminal.class)) return 0;
+        if (type.isAssignableFrom(Terminal.class)) return 1;
+        throw new IllegalArgumentException(type.getName());
+    }
+
+    @Override
+    public int compareTo(Symbol other) {
+        return java.util.Comparator
+                .nullsLast(ClassOrder)
+                .compare(this, other);
+    }
+
+    private static final Comparator<Symbol> ClassOrder =
+            (Symbol a, Symbol b) -> orderOf(a.getClass()) - orderOf(b.getClass());
 
     private static final Comparator<CharSequence> Comparator = (cs1, cs2) -> {
         if (cs1 == cs2) return 0;

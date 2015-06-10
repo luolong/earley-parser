@@ -1,6 +1,6 @@
 package info.tepp.earley.parser;
 
-import info.tepp.earley.parser.StateSet.Prediction;
+import info.tepp.earley.parser.StateSet.Predictor;
 import org.junit.Test;
 
 import java.util.*;
@@ -19,7 +19,7 @@ public class StateSetTest {
                 asSet(Product.to(Product, TIMES_OP, Factor),
                       Product.to(Product, DIVISION_OP, Factor),
                       Product.to(Factor)),
-                asSet(new Prediction(grammar).predict(Sum.to(Product).toItem(0))));
+                asSet(new Predictor(grammar).predict(Sum.to(Product).toItem(0))));
     }
 
     @Test
@@ -60,11 +60,11 @@ public class StateSetTest {
 
     @Test
     public void scannerAddsMatchingItemToNextStateSet() throws Exception {
-        StateSet.Scan scan = new StateSet(0, emptySet()).scanner("(1+2)*3");
+        StateSet.Scanner scanner = new StateSet(0, emptySet()).scanner("(1+2)*3");
 
         assertEquals(
                 asSet(Factor.to(LPAREN, Sum, RPAREN).toItem(0).advance()),
-                scan.scan(Factor.to(LPAREN, Sum, RPAREN).toItem(0)));
+                scanner.scan(Factor.to(LPAREN, Sum, RPAREN).toItem(0)));
     }
 
     @Test
@@ -117,7 +117,7 @@ public class StateSetTest {
         StateSet stateSet = StateSet.of(0,
                 Sum.to(Sum, PLUS_OP, Product), Sum.to(Sum, MINUS_OP, Product), Sum.to(Product));
 
-        stateSet.scan("", new Prediction(grammar), new StateSet.Completion(Collections.emptyList()));
+        stateSet.scan("", new Predictor(grammar), new StateSet.Completer(Collections.emptyList()));
 
         StateSet expected = StateSet.of(0,
                 Sum.to(Sum, PLUS_OP, Product), Sum.to(Sum, MINUS_OP, Product), Sum.to(Product),
@@ -139,7 +139,7 @@ public class StateSetTest {
         StateSet stateSet = StateSet.of(0,
                 Sum.to(Sum, PLUS_OP, Product), Sum.to(Sum, MINUS_OP, Product), Sum.to(Product));
 
-        StateSet nextStateSet = stateSet.scan("1", new Prediction(grammar), new StateSet.Completion(Collections.emptyList()));
+        StateSet nextStateSet = stateSet.scan("1", new Predictor(grammar), new StateSet.Completer(Collections.emptyList()));
 
         StateSet expected = StateSet.of(1, Number.to(ONE).toItem(0).advance());
 

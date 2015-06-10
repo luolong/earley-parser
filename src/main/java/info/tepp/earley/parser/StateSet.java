@@ -1,7 +1,7 @@
 package info.tepp.earley.parser;
 
 import info.tepp.earley.parser.Symbol.Nonterminal;
-import info.tepp.earley.parser.Symbol.Terminal;
+import info.tepp.earley.parser.Symbol.Sequence;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Proxy;
@@ -96,37 +96,32 @@ public class StateSet extends AbstractSet<Item> implements Set<Item> {
      * initial state of the next state set based on the findings
      * of this state set.
      */
-    public StateSet scan(String string, Prediction prediction, Completion completion) {
+    public StateSet scan(String string, Predictor predictor, Completer completer) {
         Queue<Item> queue = getQueue();
-        Scan scan = scanner(string);
+        Scanner scanner = scanner(string);
 
         StateSet next = new StateSet(index + 1, emptySet());
 
         Item item;
         while ((item = queue.poll()) != null) {
-            queue.addAll(prediction
+            queue.addAll(predictor
                     .predict(item).stream()
-                    .map(r -> r.toItem(index))
-                    .collect(toList()));
+                            .map(r -> r.toItem(index))
+                            .collect(toList()));
 
-            next.addAll(scan.scan(item));
+            next.addAll(scanner.scan(item));
 
-            queue.addAll(completion.complete(item));
+            queue.addAll(completer.complete(item));
         }
 
         return next;
     }
 
-    Scan scanner(String string) {
+    Scanner scanner(String string) {
         if (string.length() > index) {
-            return new Scan(string.charAt(index));
+            return new Scanner(string.charAt(index));
         }
-        return Scan.EMPTY;
-    }
-
-    @Nonnull
-    Prediction predicter(Grammar grammar) {
-        return new Prediction(grammar);
+        return Scanner.EMPTY;
     }
 
     @Nonnull
@@ -167,19 +162,23 @@ public class StateSet extends AbstractSet<Item> implements Set<Item> {
         }
     }
 
-    public static class Prediction {
+    public static class Predictor {
         private final Grammar grammar;
 
-        public Prediction(Grammar grammar) {
+        public Predictor(Grammar grammar) {
             this.grammar = grammar;
         }
 
-        public List<Rule> predict(Item item) {
+        public List<Prediction> predict(Item item) {
             Symbol symbol = item.getCurrent();
             if (symbol instanceof Nonterminal) {
+                if (grammar.isNullable((Nonterminal) symbol)) {
+
+                }
                 // Collect all predictions for this rule
                 return grammar
                         .rules((Nonterminal) symbol)
+                        .map(Prediction::new)
                         .collect(toList());
             }
 
@@ -187,8 +186,19 @@ public class StateSet extends AbstractSet<Item> implements Set<Item> {
         }
     }
 
-    public static class Scan {
-        private static Scan EMPTY = new Scan('\0') {
+    public static class Prediction {
+        private final Rule rule;
+        public Prediction(Rule rule) {
+            this.rule = rule;
+        }
+
+        public Item toItem(int start) {
+            return rule.toItem(start);
+        }
+    }
+
+    public static class Scanner {
+        private static Scanner EMPTY = new Scanner('\0') {
             @Override
             public Set<Item> scan(Item item) {
                 return emptySet();
@@ -197,14 +207,14 @@ public class StateSet extends AbstractSet<Item> implements Set<Item> {
 
         private final char character;
 
-        Scan(char character) {
+        Scanner(char character) {
             this.character = character;
         }
 
         public Set<Item> scan(Item item) {
             Symbol symbol = item.getCurrent();
-            if (symbol instanceof Terminal) {
-                if (((Terminal) symbol).matches(character)) {
+            if (symbol instanceof Sequence) {
+                if (((Sequence) symbol).matches(character)) {
                     return singleton(item.advance());
                 }
             }
@@ -212,10 +222,10 @@ public class StateSet extends AbstractSet<Item> implements Set<Item> {
         }
     }
 
-    public static class Completion {
+    public static class Completer {
         private final List<StateSet> stateSets;
 
-        public Completion(List<StateSet> stateSets) {
+        public Completer(List<StateSet> stateSets) {
             this.stateSets = stateSets;
         }
 
