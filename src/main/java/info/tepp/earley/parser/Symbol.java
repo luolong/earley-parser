@@ -7,6 +7,14 @@ import java.util.Objects;
 public abstract class Symbol implements Comparable<Symbol> {
     private Symbol() {/* sealed class */}
 
+    public static Nonterminal named(String name) {
+        return new Nonterminal(name);
+    }
+
+    public static Terminal term(String term) {
+        return new Terminal(term);
+    }
+
     public static class Nonterminal extends Symbol implements Comparable<Symbol> {
         private final String name;
 
@@ -48,6 +56,11 @@ public abstract class Symbol implements Comparable<Symbol> {
         public Rule to(Symbol... symbols) {
             return new Rule(this, symbols);
         }
+
+        public Rule toNull() {
+            return new Rule(this);
+        }
+
     }
 
     public static class Terminal extends Symbol implements Comparable<Symbol> {

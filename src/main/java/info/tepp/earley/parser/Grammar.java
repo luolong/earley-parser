@@ -60,4 +60,9 @@ public class Grammar {
     public Reconizer getRecognizer(Nonterminal start) {
         return new Reconizer(this, start);
     }
+
+    public Set<Nonterminal> getNullableSymbols() {
+        return new HashSet<>();
+    }
+
 }

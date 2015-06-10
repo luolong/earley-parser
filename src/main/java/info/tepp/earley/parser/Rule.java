@@ -32,6 +32,7 @@ public class Rule implements Comparable<Rule> {
         this.right = right;
 
         this.production = stream(this.right)
+                .filter(symbol -> symbol != null)
                 .map((s -> {
                     if (s instanceof Terminal) {
                         return ((Terminal) s).getTerm();
@@ -120,6 +121,14 @@ public class Rule implements Comparable<Rule> {
         return unit(Comparator(this.nonTerminals().iterator(),
                                other.nonTerminals().iterator())
                .compare(this.production, other.production));
+    }
+
+    public boolean isEmpty() {
+        return production.isEmpty();
+    }
+
+    public int size() {
+        return production.length();
     }
 
     private int unit(int number) {
