@@ -9,7 +9,7 @@ import java.util.StringJoiner;
 
 public class Item {
 
-    private static final String DOT = "•";
+    public static final String DOT = "•";
 
     private final Rule rule;
     private final int dot;

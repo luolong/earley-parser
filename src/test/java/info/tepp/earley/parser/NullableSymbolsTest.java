@@ -1,6 +1,7 @@
 package info.tepp.earley.parser;
 
 import info.tepp.earley.parser.Symbol.Nonterminal;
+import info.tepp.earley.parser.Symbol.Terminal;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -15,8 +16,8 @@ public class NullableSymbolsTest {
 
     static final Nonterminal A = Symbol.named("A");
     static final Nonterminal B = Symbol.named("B");
-    static final Symbol.Sequence a = Symbol.sequence("a");
-    static final Symbol.Sequence b = Symbol.sequence("b");
+    static final Terminal a = Symbol.sequence("a");
+    static final Terminal b = Symbol.sequence("b");
 
     @Test
     public void leftOfEmptyRuleIsNullable() {
@@ -30,7 +31,8 @@ public class NullableSymbolsTest {
                 findNullableSymbols(A.toNull(), A.to(a), A.to(B), B.to(A), B.to(b)));
     }
 
-    private <S extends Symbol> Set<S> asSet(S... symbols) {
+    @SafeVarargs
+    private final <S extends Symbol> Set<S> asSet(S... symbols) {
         return Arrays.stream(symbols).collect(toSet());
     }
 }

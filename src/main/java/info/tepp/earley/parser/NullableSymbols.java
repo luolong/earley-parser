@@ -17,7 +17,8 @@ public class NullableSymbols {
 
     public static Set<Nonterminal> findNullableSymbols(Collection<Rule> rules) {
         LinkedHashSet<Nonterminal> nullables = rules.stream()
-                .filter(Rule::isEmpty).map(Rule::getLeft)
+                .filter(Rule::isEmpty)
+                .map(Rule::getLeft)
                 .collect(toCollection(LinkedHashSet::new));
 
         // Return earley, when there is no nullable symbols
@@ -29,9 +30,8 @@ public class NullableSymbols {
         for (Rule rule : rules) {
             Nonterminal left = rule.getLeft();
             addRule(lhs, left, rule);
-            rule.nonTerminals().forEachOrdered(right -> {
-                addRule(rhs, right, rule);
-            });
+            rule.nonTerminals().forEachOrdered(
+                    right -> addRule(rhs, right, rule));
         }
 
         Deque<Nonterminal> workQueue = new LinkedList<>(nullables);

@@ -1,5 +1,7 @@
 package info.tepp.earley.parser;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.annotation.Nonnull;
 import java.util.Comparator;
 import java.util.Objects;
@@ -123,13 +125,13 @@ public abstract class Symbol implements Comparable<Symbol> {
     }
 
     private static <T extends Symbol> int orderOf(Class<T> type) {
-        if (type.isAssignableFrom(Nonterminal.class)) return 0;
-        if (type.isAssignableFrom(Terminal.class)) return 1;
+        if (Nonterminal.class.isAssignableFrom(type)) return 0;
+        if (Terminal.class.isAssignableFrom(type)) return 1;
         throw new IllegalArgumentException(type.getName());
     }
 
     @Override
-    public int compareTo(Symbol other) {
+    public int compareTo(@Nonnull Symbol other) {
         return java.util.Comparator
                 .nullsLast(ClassOrder)
                 .compare(this, other);

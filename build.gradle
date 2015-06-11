@@ -19,3 +19,7 @@ dependencies {
     testCompile 'junit:junit:4.11'
     testCompile 'org.easytesting:fest-assert-core:2.0M10'
 }
+
+task foo << {
+
+}

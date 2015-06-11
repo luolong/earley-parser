@@ -20,6 +20,8 @@ public class StateSet extends AbstractSet<Item> implements Set<Item> {
     private final LinkedHashSet<Item> items;
     private final int index;
 
+    private static boolean DEBUG = true;
+
     public static StateSet of(int index, Item... items) {
         return new StateSet(index, Arrays.asList(items));
     }
@@ -100,18 +102,19 @@ public class StateSet extends AbstractSet<Item> implements Set<Item> {
         Queue<Item> queue = getQueue();
         Scanner scanner = scanner(string);
 
+        if (DEBUG) {debug(string, index); debug();}
         StateSet next = new StateSet(index + 1, emptySet());
 
         Item item;
         while ((item = queue.poll()) != null) {
             queue.addAll(predictor
                     .predict(item).stream()
-                            .map(r -> r.toItem(index))
+                            .map(r -> debug(r, index).toItem(index))
                             .collect(toList()));
 
             next.addAll(scanner.scan(item));
 
-            queue.addAll(completer.complete(item));
+            queue.addAll(debug(completer.complete(item), index));
         }
 
         return next;
@@ -172,17 +175,24 @@ public class StateSet extends AbstractSet<Item> implements Set<Item> {
         public List<Prediction> predict(Item item) {
             Symbol symbol = item.getCurrent();
             if (symbol instanceof Nonterminal) {
-                if (grammar.isNullable((Nonterminal) symbol)) {
-
+                Nonterminal nonterminal = (Nonterminal) symbol;
+                List<Prediction> predictions = predictions(nonterminal);
+                if (grammar.isNullable(nonterminal)) {
+                    predictions.add(new NullCompletion(item));
                 }
-                // Collect all predictions for this rule
-                return grammar
-                        .rules((Nonterminal) symbol)
-                        .map(Prediction::new)
-                        .collect(toList());
+                return predictions;
+
             }
 
             return emptyList();
+        }
+
+        private List<Prediction> predictions(Nonterminal symbol) {
+            // Collect all predictions for this rule
+            return grammar
+                    .rules(symbol)
+                    .map(Prediction::new)
+                    .collect(toList());
         }
     }
 
@@ -194,6 +204,43 @@ public class StateSet extends AbstractSet<Item> implements Set<Item> {
 
         public Item toItem(int start) {
             return rule.toItem(start);
+        }
+
+        @Override
+        public String toString() {
+            String s = rule.toItem(0).toString();
+            int lp = s.lastIndexOf('(') + 1;
+            return s.substring(0,lp) + '?' + s.substring(lp+1);
+        }
+
+        @Override
+        public int hashCode() {
+            return rule.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof Prediction
+                    && rule.equals(((Prediction) other).rule);
+        }
+    }
+
+    public static class NullCompletion extends Prediction {
+        private final Item item;
+
+        public NullCompletion(Item item) {
+            super(item.getRule());
+            this.item = item;
+        }
+
+        @Override
+        public Item toItem(int start) {
+            return item.advance();
+        }
+
+        @Override
+        public String toString() {
+            return item.advance().toString().replace(Item.DOT, "\u2218");
         }
     }
 
@@ -239,6 +286,64 @@ public class StateSet extends AbstractSet<Item> implements Set<Item> {
             }
             return emptySet();
         }
-
     }
+
+    private static final String
+            LINE = "--------------------------------------------------------------------------------";
+    private static final String
+            BLANK = "                                                                               ";
+
+    private static void debug(String input, int index) {
+        if (!DEBUG) return;
+        int start = Math.max(0, index - 38);
+        int end = Math.min(index + 38, input.length());
+        int offset = index - start;
+        String out = "\n" + input.substring(start, end);
+        out += '\n';
+        if (offset > 0) out += LINE.substring(0, offset);
+        out += '^';
+        if (index < end) out += LINE.substring(index+1, end);
+        System.out.println(out);
+    }
+
+    private static Prediction debug(Prediction prediction, int index) {
+        if (DEBUG) {
+            int start = Math.max(0, index - 38);
+            int offset = index - start;
+            String out = "";
+            if (offset > 1) out += BLANK.substring(0, offset -1);
+            out += prediction.toString();
+            if (prediction instanceof NullCompletion) out += " <- nullable completion";
+            else out += " <- prediction";
+            System.out.println(out);
+        }
+        return prediction;
+    }
+
+    private static Set<Item> debug(Set<Item> complete, int index) {
+        if (DEBUG) {
+            complete.forEach(item -> {
+                int start = Math.max(0, index - 38);
+                int offset = index - start;
+                String out = "";
+                if (offset > 1) out += BLANK.substring(0, offset -1);
+                out += item.toString() + " <- completion";
+                System.out.println(out);
+            });
+        }
+        return complete;
+    }
+
+    private void debug() {
+        if (!DEBUG) return;
+        forEach(item -> {
+            int start = Math.max(0, index - 38);
+            int offset = index - start;
+            String out = "";
+            if (offset > 1) out += BLANK.substring(0, offset -1);
+            out += item.toString();
+            System.out.println(out);
+        });
+    }
+
 }

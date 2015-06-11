@@ -10,7 +10,7 @@ public class SimpleArithmetic {
     static final Nonterminal Factor = new Nonterminal("Factor");
     static final Nonterminal Number = new Nonterminal("Number");
 
-    static final Nonterminal Expression = new Nonterminal("Expression");
+    static final Nonterminal Expression = new Nonterminal("Parens");
 
     static final Sequence PLUS_OP      = new Sequence("+");
     static final Sequence MINUS_OP     = new Sequence("-");

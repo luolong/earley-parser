@@ -1,8 +1,12 @@
 package info.tepp.earley.parser;
 
+import info.tepp.earley.parser.StateSet.NullCompletion;
+import info.tepp.earley.parser.StateSet.Prediction;
 import info.tepp.earley.parser.StateSet.Predictor;
+import info.tepp.earley.parser.Symbol.Nonterminal;
 import org.junit.Test;
 
+import javax.annotation.processing.Completion;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,9 +20,9 @@ public class StateSetTest {
     @Test
     public void predicterPredictsNextNonterminalProductions() throws Exception {
         assertEquals(
-                asSet(Product.to(Product, TIMES_OP, Factor),
-                      Product.to(Product, DIVISION_OP, Factor),
-                      Product.to(Factor)),
+                asSet(new Prediction(Product.to(Product, TIMES_OP, Factor)),
+                      new Prediction(Product.to(Product, DIVISION_OP, Factor)),
+                      new Prediction(Product.to(Factor))),
                 asSet(new Predictor(grammar).predict(Sum.to(Product).toItem(0))));
     }
 
@@ -104,6 +108,19 @@ public class StateSetTest {
         Iterator<Item> iterator = StateSet.of(0, Sum.to(Product)).iterator();
         iterator.next();
         iterator.remove();
+    }
+
+    @Test
+    public void emptyRuleIsAddedDuringPrediction() throws Exception {
+        Nonterminal A = Symbol.named("A");
+        Nonterminal B = Symbol.named("B");
+
+        Grammar g = Grammar.of(A.to(B), B.to(A), B.toNull());
+        assertEquals(
+                asSet(new Prediction(B.toNull()),
+                      new Prediction(B.to(A)),
+                      new NullCompletion(A.to(B).toItem(0))),
+                asSet(new Predictor(g).predict(A.to(B).toItem(0))));
     }
 
     @Test
