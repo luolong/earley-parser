@@ -8,6 +8,9 @@ import java.util.Set;
  * Grammar is a set of rules.
  */
 public class Grammar extends AbstractSet<Rule> implements Set<Rule> {
+    public Grammar(Rule ... rules) {
+    }
+
     /**
      * Returns an iterator over rules contained in this grammar.
      */
