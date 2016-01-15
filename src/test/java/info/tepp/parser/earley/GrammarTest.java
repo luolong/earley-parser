@@ -2,13 +2,13 @@ package info.tepp.parser.earley;
 
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
+import java.util.Set;
 
 public class GrammarTest {
 
     @Test
-    public void test() throws Exception {
-        fail("Not implemented!");
+    public void grammasIsASetOfRules() throws Exception {
+        Set<Rule> grammar = new Grammar();
     }
 
 }
