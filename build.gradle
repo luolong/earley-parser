@@ -1,0 +1,14 @@
+apply plugin: 'java'
+
+group = 'info.tepp.parser'
+version = 'SNAPSHOT'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.13'
+
+    testCompile 'junit:junit:4.12'
+}
