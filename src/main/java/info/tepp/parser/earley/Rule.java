@@ -4,7 +4,7 @@ package info.tepp.parser.earley;
  * Single rule of an earley grammar.
  */
 public class Rule {
-    private Symbol symbol;
+    private final Symbol symbol;
     private final Production production;
 
     public Rule(Symbol symbol, Production production) {
@@ -12,7 +12,11 @@ public class Rule {
         this.production = production;
     }
 
-    public Symbol getLhsSymbol() {
+    public Symbol getSymbol() {
         return symbol;
+    }
+
+    public Production getProduction() {
+        return production;
     }
 }
