@@ -9,7 +9,8 @@ public class ProductionTest {
     @Test
     public void productionIsAListOfSymbols() throws Exception {
         assertThat(new Production(new Symbol("A"), new Symbol("B"), new Symbol("'c'")))
-            .containsExactly(new Symbol("A"), new Symbol("B"), new Symbol("'c'"));
+            .containsExactly(new Symbol("A"), new Symbol("B"), new Symbol("'c'"))
+            .inOrder();
     }
 
     @Test

@@ -1,7 +1,9 @@
 package info.tepp.parser.earley;
 
 import java.util.AbstractList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Spliterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,15 +17,18 @@ public class Production extends AbstractList<Symbol> implements List<Symbol> {
         this.symbols = symbols;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @param index
-     * @throws IndexOutOfBoundsException {@inheritDoc}
-     */
     @Override
     public Symbol get(int index) {
         return symbols[index];
+    }
+
+    @Override
+    public Spliterator<Symbol> spliterator() {
+        return Arrays.spliterator(symbols);
+    }
+
+    public Stream<Symbol> symbols() {
+        return stream();
     }
 
     @Override

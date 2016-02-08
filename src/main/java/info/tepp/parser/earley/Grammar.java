@@ -44,4 +44,14 @@ public class Grammar extends AbstractSet<Rule> implements Set<Rule> {
     public final Stream<Rule> rules() {
         return stream();
     }
+
+    /**
+     * Returns a {@link Stream stream} of all unique symbols used in this grammar.
+     */
+    public Stream<Symbol> symbols() {
+        return rules().flatMap(rule -> Stream.concat(
+            Stream.of(rule.getSymbol()),
+            rule.getProduction().symbols()
+        )).distinct();
+    }
 }

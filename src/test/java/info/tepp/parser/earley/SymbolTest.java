@@ -7,6 +7,11 @@ import org.junit.Test;
 public class SymbolTest {
 
     @Test
+    public void symbolHasAName() throws Exception {
+        assertEquals("A", new Symbol("A").getName());
+    }
+
+    @Test
     public void symbolEquality() throws Exception {
         assertEquals(new Symbol("A"), new Symbol("A"));
     }
@@ -19,10 +24,5 @@ public class SymbolTest {
     @Test
     public void symbolToString() throws Exception {
         assertEquals("A", new Symbol("A").toString());
-    }
-
-    @Test
-    public void symbolHasAName() throws Exception {
-        assertEquals("A", new Symbol("A").getName());
     }
 }
