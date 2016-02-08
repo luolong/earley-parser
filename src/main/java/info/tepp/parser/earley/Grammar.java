@@ -1,14 +1,20 @@
 package info.tepp.parser.earley;
 
 import java.util.AbstractSet;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.stream.Stream;
 
 /**
  * Grammar is a set of rules.
  */
 public class Grammar extends AbstractSet<Rule> implements Set<Rule> {
+    private final Rule[] rules;
+
     public Grammar(Rule ... rules) {
+        this.rules = Stream.of(rules).distinct().toArray(Rule[]::new);
     }
 
     /**
@@ -16,7 +22,12 @@ public class Grammar extends AbstractSet<Rule> implements Set<Rule> {
      */
     @Override
     public Iterator<Rule> iterator() {
-        return null;
+        return rules().iterator();
+    }
+
+    @Override
+    public Spliterator<Rule> spliterator() {
+        return Arrays.spliterator(rules);
     }
 
     /**
@@ -24,6 +35,13 @@ public class Grammar extends AbstractSet<Rule> implements Set<Rule> {
      */
     @Override
     public int size() {
-        return 0;
+        return rules.length;
+    }
+
+    /**
+     * Returns a sequential {@link Stream stream} of {@link Rule rules} making up this grammar.
+     */
+    public final Stream<Rule> rules() {
+        return stream();
     }
 }

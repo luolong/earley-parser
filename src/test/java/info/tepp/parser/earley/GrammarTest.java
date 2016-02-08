@@ -1,23 +1,19 @@
 package info.tepp.parser.earley;
 
-import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
 
-import org.junit.Ignore;
+import info.tepp.parser.earley.grammars.Expression;
 import org.junit.Test;
-
-import java.util.Set;
 
 public class GrammarTest {
 
     @Test
-    public void grammasIsASetOfRules() throws Exception {
-        Set<Rule> g = new Grammar();
+    public void grammarIsASetOfRules() throws Exception {
+        assertThat(Expression.grammar()).containsExactly(Expression.rules());
     }
 
     @Test
-    @Ignore
-    public void canCreateAGrammarWithASingleRule() throws Exception {
-        assertTrue(new Grammar(new Rule(new Symbol("Product"), new Production()))
-                     .contains(new Rule(new Symbol("Product"), new Production())));
+    public void grammarSizeIsCountOfUniqueRules() throws Exception {
+        assertThat(Expression.grammar()).hasSize(Expression.rules().length);
     }
 }
