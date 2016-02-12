@@ -1,10 +1,14 @@
 package info.tepp.parser.earley;
 
+import static java.util.stream.Collectors.joining;
+
 import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Spliterator;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -55,7 +59,12 @@ public class Grammar extends AbstractSet<Rule> implements Set<Rule> {
         )).distinct();
     }
 
+    @Override
+    public String toString() {
+        return rules().map(Rule::toString).collect(joining("\n"));
+    }
+
     public Recognizer recognize(Symbol startSymbol) {
-        return new Recognizer();
+        return new Recognizer(this);
     }
 }
