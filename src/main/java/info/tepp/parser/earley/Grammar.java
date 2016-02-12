@@ -7,8 +7,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Spliterator;
-import java.util.StringJoiner;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -65,6 +63,6 @@ public class Grammar extends AbstractSet<Rule> implements Set<Rule> {
     }
 
     public Recognizer recognize(Symbol startSymbol) {
-        return new Recognizer(this);
+        return new Recognizer(this, startSymbol);
     }
 }

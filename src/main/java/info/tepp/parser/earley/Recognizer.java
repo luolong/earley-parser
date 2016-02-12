@@ -5,12 +5,22 @@ package info.tepp.parser.earley;
  */
 public class Recognizer {
     private final Grammar grammar;
+    private final Symbol startSymbol;
 
-    public Recognizer(Grammar grammar) {
+    public Recognizer(Grammar grammar, Symbol startSymbol) {
         this.grammar = grammar;
+        this.startSymbol = startSymbol;
     }
 
     public Grammar getGrammar() {
         return grammar;
+    }
+
+    public Symbol getStartSymbol() {
+        return startSymbol;
+    }
+
+    public Parse parse(CharSequence input) {
+        return new Parse();
     }
 }
