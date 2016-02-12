@@ -1,5 +1,7 @@
 package info.tepp.parser.earley;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class Helpers {
@@ -16,5 +18,9 @@ public final class Helpers {
 
     public static Symbol symbol(String name) {
         return new Symbol(name);
+    }
+
+    public static <T> List<T> asList(Stream<T> stream) {
+        return stream.collect(Collectors.toList());
     }
 }

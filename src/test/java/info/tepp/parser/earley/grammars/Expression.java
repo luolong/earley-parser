@@ -7,66 +7,71 @@ import info.tepp.parser.earley.Symbol;
 
 public class Expression {
 
-    private final static Symbol PLUSMINUS = new Symbol("[+-]");
-    private final static Symbol MULTDIV = new Symbol("[*/]");
-    private final static Symbol RPAR = new Symbol("')'");
-    private final static Symbol LPAR = new Symbol("'('");
-    private final static Symbol DIGIT = new Symbol("[0-9]");
+    public static Symbols Symbols() {
+        return new Symbols();
+    }
 
-    private final static Symbol Sum = new Symbol("Sum");
-    private final static Symbol Product = new Symbol("Product");
-    private final static Symbol Factor = new Symbol("Factor");
-    private final static Symbol Number = new Symbol("Number");
+    public static final class Symbols {
+        public final Symbol PLUSMINUS = new Symbol("[+-]");
+        public final Symbol MULTDIV = new Symbol("[*/]");
+        public final Symbol RPAR = new Symbol("')'");
+        public final Symbol LPAR = new Symbol("'('");
+        public final Symbol DIGIT = new Symbol("[0-9]");
 
-    private final Grammar g = new Grammar(
-        // Sum = Sum [+-] Product | Product
-        new Rule(Sum, new Production(Sum, PLUSMINUS, Product)),
-        new Rule(Sum, new Production(Product)),
+        public final Symbol Sum = new Symbol("Sum");
+        public final Symbol Product = new Symbol("Product");
+        public final Symbol Factor = new Symbol("Factor");
+        public final Symbol Number = new Symbol("Number");
 
-        // Product = Product [*/] Factor | Factor
-        new Rule(Product, new Production(Product, MULTDIV, Factor)),
-        new Rule(Product, new Production(Factor)),
+        public Symbol[] all() {
+            return new Symbol[] {
+                // Terminal symbols
+                PLUSMINUS, MULTDIV, RPAR, LPAR, DIGIT,
 
-        // Factor  = '(' Sum ')' | Number
-        new Rule(Factor, new Production(LPAR, Sum, RPAR)),
-        new Rule(Factor, new Production(Number)),
+                // Nonterminal symbols
+                Sum, Product, Factor, Number
+            };
+        }
+    }
 
-        // Number  = [0-9]+
-        new Rule(Number, new Production(DIGIT, Number)),
-        new Rule(Number, new Production(DIGIT))
-    );
+    public static Rules Rules() {
+        return new Rules();
+    }
+
+    public static final class Rules {
+        final Symbols s = new Symbols();
+        public Rule[] all() {
+            return new Rule[] {
+                // Sum = Sum [+-] Product | Product
+                new Rule(s.Sum, new Production(s.Sum, s.PLUSMINUS, s.Product)),
+                new Rule(s.Sum, new Production(s.Product)),
+
+                // Product = Product [*/] Factor | Factor
+                new Rule(s.Product, new Production(s.Product, s.MULTDIV, s.Factor)),
+                new Rule(s.Product, new Production(s.Factor)),
+
+                // Factor  = '(' Sum ')' | Number
+                new Rule(s.Factor, new Production(s.LPAR, s.Sum, s.RPAR)),
+                new Rule(s.Factor, new Production(s.Number)),
+
+                // Number  = [0-9]+
+                new Rule(s.Number, new Production(s.DIGIT, s.Number)),
+                new Rule(s.Number, new Production(s.DIGIT))
+            };
+        }
+    }
+
+    private final Grammar g = new Grammar(new Rules().all());
 
     public static Grammar grammar() {
         return new Expression().g;
     }
 
     public static Rule[] rules() {
-        return new Rule[] {
-            // Sum = Sum [+-] Product | Product
-            new Rule(Sum, new Production(Sum, PLUSMINUS, Product)),
-            new Rule(Sum, new Production(Product)),
-
-            // Product = Product [*/] Factor | Factor
-            new Rule(Product, new Production(Product, MULTDIV, Factor)),
-            new Rule(Product, new Production(Factor)),
-
-            // Factor  = '(' Sum ')' | Number
-            new Rule(Factor, new Production(LPAR, Sum, RPAR)),
-            new Rule(Factor, new Production(Number)),
-
-            // Number  = [0-9]+
-            new Rule(Number, new Production(DIGIT, Number)),
-            new Rule(Number, new Production(DIGIT))
-        };
+        return new Rules().all();
     }
 
     public static Symbol[] symbols() {
-        return new Symbol[] {
-            // Terminal symbols
-            PLUSMINUS, MULTDIV, RPAR, LPAR, DIGIT,
-
-            // Nonterminal symbols
-            Sum, Product, Factor, Number
-        };
+        return new Symbols().all();
     }
 }
