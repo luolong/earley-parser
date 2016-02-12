@@ -1,7 +1,7 @@
 package info.tepp.parser.earley;
 
 import static com.google.common.truth.Truth.assertThat;
-import static java.util.stream.Collectors.toList;
+import static info.tepp.parser.earley.Helpers.asList;
 
 import info.tepp.parser.earley.grammars.Expression;
 import org.junit.Test;
@@ -22,7 +22,14 @@ public class GrammarTest {
 
     @Test
     public void grammarHasStreamOfSymbols() throws Exception {
-        assertThat(Expression.grammar().symbols().collect(toList()))
+        assertThat(asList(Expression.grammar().symbols()))
             .containsExactly((Object[]) Expression.symbols());
     }
+
+    @Test
+    public void grammarHasStreamOfRules() throws Exception {
+        assertThat(asList(Expression.grammar().rules()))
+            .containsExactly((Object[]) Expression.rules());
+    }
+
 }
