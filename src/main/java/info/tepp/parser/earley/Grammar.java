@@ -54,4 +54,8 @@ public class Grammar extends AbstractSet<Rule> implements Set<Rule> {
             rule.getProduction().symbols()
         )).distinct();
     }
+
+    public Recognizer recognize(Symbol startSymbol) {
+        return new Recognizer();
+    }
 }
