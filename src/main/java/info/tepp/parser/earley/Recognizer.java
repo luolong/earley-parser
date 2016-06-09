@@ -20,7 +20,8 @@ public class Recognizer {
         return startSymbol;
     }
 
-    public Parse parse(CharSequence input) {
+    public Parse read( CharSequence input ) {
         return new Parse();
     }
+
 }

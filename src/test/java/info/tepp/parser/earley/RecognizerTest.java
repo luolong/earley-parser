@@ -26,7 +26,7 @@ public class RecognizerTest {
 
     @Test
     public void parsingEmptyInput() throws Exception {
-        Parse result = Expression.grammar().recognize(Expression.Symbols().Sum).parse("");
+        Parse result = Expression.grammar().recognize(Expression.Symbols().Sum).read( "" );
         assertFalse(result.isSuccess());
     }
 }
